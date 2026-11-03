@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dev-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dev-postgres:5432/app_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    volumes:
+      # Mavenのビルド成果物をマウント（※プロジェクト名やバージョンに合わせてjarファイル名は変更してください）
+      - ./ifControlApp/target/ifControlApp-0.0.1-SNAPSHOT.jar:/app/app.jar:ro
+    networks:
+      - dev-net
+
+networks:
+  dev-net:
+    external: true

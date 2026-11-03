@@ -1,0 +1,60 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "actionType",
+      "type": "pickString",
+      "description": "【1/2】実行する処理を選択してください",
+      "options": [
+        { "label": "▶ 起動 (up)", "value": "up -d" },
+        { "label": "■ 停止 (down)", "value": "down" }
+      ]
+    },
+    {
+      "id": "targetDir",
+      "type": "pickString",
+      "description": "【2/2】対象のコンテナを選択してください",
+      "options": [
+        { "label": "0. すべて (All)", "value": "all" },
+        { "label": "1. DB", "value": "db" },
+        { "label": "2. Backend", "value": "app/backend" },
+        { "label": "3. Frontend", "value": "app/frontend" },
+        { "label": "4. IF (Batch)", "value": "if" }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "label": "⚡ Docker: メニューから選択して実行",
+      "type": "shell",
+      "command": "if ('${input:targetDir}' -eq 'all') { if ('${input:actionType}' -eq 'down') { cd '${workspaceFolder}/if'; docker compose down; cd '${workspaceFolder}/app/frontend'; docker compose down; cd '${workspaceFolder}/app/backend'; docker compose down; cd '${workspaceFolder}/db'; docker compose down } else { cd '${workspaceFolder}/db'; docker compose up -d; cd '${workspaceFolder}/app/backend'; docker compose up -d; cd '${workspaceFolder}/app/frontend'; docker compose up -d; cd '${workspaceFolder}/if'; docker compose up -d --build } } else { cd '${workspaceFolder}/${input:targetDir}'; if ('${input:targetDir}' -eq 'if' -and '${input:actionType}' -eq 'up -d') { docker compose up -d --build } else { docker compose ${input:actionType} } }",
+      "options": {
+        "shell": {
+          "executable": "powershell.exe",
+          "args": ["-NoProfile", "-Command"]
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "★ 状態確認 (ps)",
+      "type": "shell",
+      "command": "docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    },
+    {
+      "label": "★ IFコンテナに入る (bash)",
+      "type": "shell",
+      "command": "docker compose exec batch bash",
+      "options": { "cwd": "${workspaceFolder}/if" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "new", "focus": true }
+    }
+  ]
+}

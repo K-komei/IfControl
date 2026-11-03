@@ -1,0 +1,26 @@
+services:
+  batch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dev-batch
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: dev-postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB:-app_db}
+      DB_USER: ${POSTGRES_USER:-postgres}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      # サブフォルダ batch 側のスクリプトとデータをマウント
+      - ./batch/scripts:/app/scripts
+      - ./batch/data:/app/data
+    tty: true
+    networks:
+      - dev-net
+
+networks:
+  dev-net:
+    external: true

@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dev-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      # Viteで生成された dist フォルダをマウント
+      - ./ifControlPanel/dist:/usr/share/nginx/html:ro
+    networks:
+      - dev-net
+
+networks:
+  dev-net:
+    external: true
