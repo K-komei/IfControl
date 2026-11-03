@@ -1,0 +1,5 @@
+# Runtime/imported data directories
+**/data/
+
+# Node.js dependencies
+node_modules/
