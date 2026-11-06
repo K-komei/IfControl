@@ -1,4 +1,4 @@
-package ko.ifControll.base;
+package ko.ifControl;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
